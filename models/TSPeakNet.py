@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Dual-Branch Fusion Model
+TSPeakNet Model
 Combines short-term and long-term branches with learnable weights
 """
 
@@ -97,3 +97,4 @@ class DualBranchForecast(nn.Module):
         pf = w[0] * ps + w[1] * pl
         
         return ps, pl, pf
+
