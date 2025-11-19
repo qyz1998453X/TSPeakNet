@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <title>模型预测结果 - 时空预测系统</title>
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: 
+                linear-gradient(135deg, 
+                    rgba(96, 165, 250, 0.95) 0%,
+                    rgba(147, 197, 253, 0.9) 25%,
+                    rgba(196, 181, 253, 0.9) 50%,
+                    rgba(167, 139, 250, 0.9) 75%,
+                    rgba(129, 140, 248, 0.95) 100%
+                );
+            min-height: 100vh;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.25) 0%, transparent 50%),
+                radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+            pointer-events: none;
+            z-index: 0;
+        }
+        body::after {
+            content: none;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+            position: relative;
+            z-index: 1;
+        }
+        .logo { font-size: 3rem; margin-bottom: 1rem; }
+        .title { 
+            font-size: 3rem; 
+            font-weight: 800; 
+            color: white;
+            margin-bottom: 1rem;
+            text-shadow: 0 8px 16px rgba(0, 0, 0, 0.3),
+                        0 0 40px rgba(255, 255, 255, 0.1);
+            letter-spacing: 0.5px;
+        }
+        .subtitle { 
+            font-size: 1.25rem; 
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            font-weight: 500;
+        }
+        .container { max-width: 1600px; margin: 0 auto; position: relative; z-index: 1; }
+        .nav-card { 
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px; 
+            padding: 1.5rem; 
+            margin-bottom: 2rem; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+        }
+        .back-btn { 
+            display: inline-block; 
+            padding: 0.75rem 1.5rem; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white; 
+            text-decoration: none; 
+            border-radius: 8px; 
+            font-weight: 600; 
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+        .back-btn:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
+        }
+        .model-selector { 
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 0.85) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 15px; 
+            padding: 2rem; 
+            margin-bottom: 2rem; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); 
+        }
+        .section-title { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: #1e293b; 
+            margin-bottom: 1rem; 
+            text-shadow: none;
+        }
+        .model-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem; }
+        .model-btn { 
+            padding: 1rem; 
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            color: #334155; 
+            border-radius: 10px; 
+            font-weight: 600; 
+            cursor: pointer; 
+            transition: all 0.3s; 
+            font-size: 1rem; 
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        .model-btn:hover { 
+            transform: translateY(-3px); 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.5); 
+        }
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 15px; 
+            padding: 1.5rem; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.15); 
+            text-align: center; 
+        }
+        .stat-label { font-size: 0.9rem; color: #64748b; margin-bottom: 0.5rem; font-weight: 500; }
+        .stat-value { font-size: 2rem; font-weight: 700; color: #667eea; text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        .chart-card { 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 15px; 
+            padding: 2rem; 
+            margin-bottom: 2rem; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+        }
+        .chart-title { 
+            font-size: 1.5rem; 
+            font-weight: 700; 
+            color: #1e293b; 
+            margin-bottom: 1rem;
+            text-shadow: none; 
+        }
+        .chart-container { height: 450px; width: 100%; }
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 1rem; overflow-x: auto; }
+        .data-table th, .data-table td { 
+            padding: 0.75rem; 
+            text-align: left; 
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1); 
+            font-size: 0.9rem; 
+            color: #334155;
+        }
+        .data-table th { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            font-weight: 600; 
+            color: white; 
+        }
+        .data-table tr:hover { background: rgba(102, 126, 234, 0.08); }
+        .loading { text-align: center; padding: 3rem; color: #64748b; font-size: 1.2rem; }
+        .compare-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
+        .model-comparison-card { 
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+            border-radius: 15px; 
+            padding: 2rem; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
+        }
+        .comparison-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .comparison-table th, .comparison-table td { 
+            padding: 1rem; 
+            text-align: left; 
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1); 
+            color: #334155;
+        }
+        .comparison-table th { 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+            color: white; 
+            font-weight: 600;
+        }
+        .comparison-table tr:hover { background: rgba(102, 126, 234, 0.08); }
+        p { color: #475569; line-height: 1.6; }
+        h3 { color: #1e293b; font-weight: 700; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🔮</div>
+        <h1 class="title">模型预测结果</h1>
+        <p class="subtitle">12种时序预测模型对比展示</p>
+    </div>
+    
+    <div class="container">
+        <div class="nav-card">
+            <a href="http://localhost:8003/" class="back-btn">← 返回首页</a>
+        </div>
+        
+        <!-- 模型选择器 -->
+        <div class="model-selector">
+            <h2 class="section-title">选择预测模型</h2>
+            <p style="color: #cbd5e0; margin-bottom: 1rem;">点击模型按钮查看该模型的详细预测结果，或选择"全部对比"查看所有模型的整体对比</p>
+            <div class="model-grid" id="modelGrid">
+                <!-- 模型按钮将动态生成 -->
+            </div>
+        </div>
+        
+        <!-- 统计信息 -->
+        <div class="stats-grid" id="statsGrid" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-label">当前模型</div>
+                <div class="stat-value" id="statModel">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">预测数量</div>
+                <div class="stat-value" id="statCount">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">平均预测值</div>
+                <div class="stat-value" id="statAvg">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">最大预测值</div>
+                <div class="stat-value" id="statMax">-</div>
+            </div>
+        </div>
+        
+        <!-- 单模型预测结果 -->
+        <div class="chart-card" id="singleModelSection" style="display: none;">
+            <h2 class="chart-title" id="modelTitle">模型预测趋势</h2>
+            <div id="modelChart" class="chart-container"></div>
+            <div id="modelTable" style="margin-top: 2rem;"></div>
+        </div>
+        
+        <!-- 区县模型对比 -->
+        <div class="chart-card" id="districtCompareSection" style="display: none;">
+            <h2 class="chart-title">📍 区县模型预测对比</h2>
+            <p style="color: #475569; margin-bottom: 1.5rem;">选择区县查看所有模型在该区县的预测效果，蓝色曲线为真实数据，其他颜色为各模型预测</p>
+            
+            <!-- 区县选择器 -->
+            <div class="model-grid" id="districtGrid" style="margin-bottom: 2rem;">
+                <!-- 区县按钮将动态生成 -->
+            </div>
+            
+            <!-- 区县对比图表 -->
+            <div id="districtChart" class="chart-container"></div>
+        </div>
+        
+        <!-- 模型对比 -->
+        <div class="chart-card" id="compareSection" style="display: none;">
+            <h2 class="chart-title">多模型对比分析</h2>
+            <div id="compareChart" class="chart-container"></div>
+            <div class="model-comparison-card" style="margin-top: 2rem;">
+                <h3 style="color: #1e293b; margin-bottom: 1rem; font-weight: 700;">模型性能对比表</h3>
+                <table class="comparison-table" id="compareTable"></table>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let allModels = [];
+        let currentModel = null;
+        
+        // 加载所有模型列表
+        async function loadModels() {
+            try {
+                const response = await fetch('/api/prediction-models');
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    allModels = result.data;
+                    renderModelButtons(allModels);
+                } else {
+                    document.getElementById('modelGrid').innerHTML = '<div style="color: #ef4444;">加载模型列表失败: ' + result.message + '</div>';
+                }
+            } catch (error) {
+                document.getElementById('modelGrid').innerHTML = '<div style="color: #ef4444;">加载失败: ' + error.message + '</div>';
+            }
+        }
+        
+        // 渲染模型按钮
+        function renderModelButtons(models) {
+            let html = '';
+            models.forEach(model => {
+                html += `<button class="model-btn" onclick="selectModel('${model}')">${model}</button>`;
+            });
+            html += `<button class="model-btn" onclick="compareAllModels()" style="background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);">全部对比</button>`;
+            document.getElementById('modelGrid').innerHTML = html;
+        }
+        
+        // 选择单个模型
+        async function selectModel(modelName) {
+            currentModel = modelName;
+            
+            // 隐藏对比区域，显示单模型区域
+            document.getElementById('compareSection').style.display = 'none';
+            document.getElementById('singleModelSection').style.display = 'block';
+            document.getElementById('statsGrid').style.display = 'grid';
+            
+            try {
+                // 加载模型统计数据
+                const statsResponse = await fetch(`/api/model-stats?model=${modelName}`);
+                const statsResult = await statsResponse.json();
+                
+                if (statsResult.status === 'success') {
+                    updateStats(statsResult);
+                }
+                
+                // 加载模型预测数据
+                const dataResponse = await fetch(`/api/prediction-data/${modelName}`);
+                const dataResult = await dataResponse.json();
+                
+                if (dataResult.status === 'success') {
+                    updateModelChart(dataResult);
+                    updateModelTable(dataResult);
+                } else {
+                    document.getElementById('modelChart').innerHTML = '<div class="loading">加载失败: ' + dataResult.message + '</div>';
+                }
+            } catch (error) {
+                document.getElementById('modelChart').innerHTML = '<div class="loading">加载失败: ' + error.message + '</div>';
+            }
+        }
+        
+        // 更新统计数据
+        function updateStats(statsResult) {
+            const stats = statsResult.stats;
+            document.getElementById('statModel').textContent = statsResult.model;
+            document.getElementById('statCount').textContent = statsResult.total_predictions;
+            document.getElementById('statAvg').textContent = stats.avg_prediction ? stats.avg_prediction.toFixed(2) : '-';
+            document.getElementById('statMax').textContent = stats.max_prediction ? stats.max_prediction.toFixed(2) : '-';
+        }
+        
+        // 更新模型预测图表
+        function updateModelChart(dataResult) {
+            if (!dataResult.data || dataResult.data.length === 0) {
+                document.getElementById('modelChart').innerHTML = '<div class="loading">暂无数据</div>';
+                return;
+            }
+            
+            // 找到数值列
+            const numericCols = [];
+            dataResult.headers.forEach(header => {
+                const values = dataResult.data.map(d => d[header]).filter(v => v !== null && v !== undefined && !isNaN(v));
+                if (values.length > 0) {
+                    numericCols.push({
+                        name: header,
+                        values: values.map(v => parseFloat(v))
+                    });
+                }
+            });
+            
+            if (numericCols.length === 0) {
+                document.getElementById('modelChart').innerHTML = '<div class="loading">无可视化数据</div>';
+                return;
+            }
+            
+            // 使用第一个数值列创建图表
+            const col = numericCols[0];
+            const layout = {
+                title: currentModel + ' - ' + col.name + ' 预测趋势',
+                xaxis: { title: '时间序列' },
+                yaxis: { title: col.name },
+                template: 'plotly_dark'
+            };
+            
+            const trace = {
+                x: Array.from({length: col.values.length}, (_, i) => i + 1),
+                y: col.values,
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: { color: '#667eea', width: 2 },
+                marker: { size: 6 }
+            };
+            
+            Plotly.newPlot('modelChart', [trace], layout);
+        }
+        
+        // 更新模型数据表格
+        function updateModelTable(dataResult) {
+            if (!dataResult.data || dataResult.data.length === 0) {
+                document.getElementById('modelTable').innerHTML = '';
+                return;
+            }
+            
+            let html = '<h3 style="color: #f7fafc; margin-bottom: 1rem;">预测数据详情</h3><table class="data-table"><thead><tr>';
+            dataResult.headers.slice(0, 8).forEach(header => {
+                html += `<th>${header}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            
+            dataResult.data.slice(0, 20).forEach(row => {
+                html += '<tr>';
+                dataResult.headers.slice(0, 8).forEach(header => {
+                    const value = row[header] || '';
+                    html += `<td>${value}</td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            html += `<p style="margin-top: 1rem; color: #cbd5e0;">显示前20条数据，共${dataResult.total_rows}条记录</p>`;
+            
+            document.getElementById('modelTable').innerHTML = html;
+        }
+        
+        // 对比所有模型
+        async function compareAllModels() {
+            // 隐藏单模型区域，显示对比区域
+            document.getElementById('singleModelSection').style.display = 'none';
+            document.getElementById('statsGrid').style.display = 'none';
+            document.getElementById('compareSection').style.display = 'block';
+            document.getElementById('districtCompareSection').style.display = 'block';
+            
+            try {
+                const response = await fetch('/api/compare-models');
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    updateCompareChart(result);
+                    updateCompareTable(result);
+                } else {
+                    document.getElementById('compareChart').innerHTML = '<div class="loading">加载失败: ' + result.message + '</div>';
+                }
+            } catch (error) {
+                document.getElementById('compareChart').innerHTML = '<div class="loading">加载失败: ' + error.message + '</div>';
+            }
+            
+            // 加载区县对比数据
+            loadDistrictComparison();
+        }
+        
+        // 更新对比图表
+        function updateCompareChart(comparison) {
+            if (!comparison.models || comparison.models.length === 0) {
+                document.getElementById('compareChart').innerHTML = '<div class="loading">暂无对比数据</div>';
+                return;
+            }
+            
+            const models = comparison.models.map(m => m.name);
+            const avgs = comparison.models.map(m => m.avg.toFixed(2));
+            
+            const layout = {
+                title: '模型平均预测值对比',
+                xaxis: { title: '模型' },
+                yaxis: { title: '平均预测值' },
+                template: 'plotly_dark'
+            };
+            
+            const trace = {
+                x: models,
+                y: avgs,
+                type: 'bar',
+                marker: { color: '#667eea' }
+            };
+            
+            Plotly.newPlot('compareChart', [trace], layout);
+        }
+        
+        // 更新对比表格
+        function updateCompareTable(comparison) {
+            if (!comparison.models || comparison.models.length === 0) {
+                document.getElementById('compareTable').innerHTML = '';
+                return;
+            }
+            
+            let html = '<thead><tr><th>模型名称</th><th>预测数量</th><th>平均预测值</th><th>最大预测值</th><th>最小预测值</th></tr></thead><tbody>';
+            
+            comparison.models.forEach(model => {
+                html += `<tr>
+                    <td><strong>${model.name}</strong></td>
+                    <td>${model.count}</td>
+                    <td>${model.avg.toFixed(4)}</td>
+                    <td>${model.max.toFixed(4)}</td>
+                    <td>${model.min.toFixed(4)}</td>
+                </tr>`;
+            });
+            
+            html += '</tbody>';
+            
+            document.getElementById('compareTable').innerHTML = html;
+        }
+        
+        // 加载区县对比数据
+        let districtData = null;
+        let currentDistrict = null;
+        
+        async function loadDistrictComparison() {
+            try {
+                const response = await fetch('/api/district-model-comparison');
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    districtData = result.data;
+                    renderDistrictButtons(result.data.districts);
+                    // 默认选择第一个区县
+                    if (result.data.districts && result.data.districts.length > 0) {
+                        selectDistrict(result.data.districts[0]);
+                    }
+                } else {
+                    document.getElementById('districtChart').innerHTML = '<div class="loading">加载失败: ' + result.message + '</div>';
+                }
+            } catch (error) {
+                console.error('加载区县对比数据失败:', error);
+                document.getElementById('districtChart').innerHTML = '<div class="loading">加载失败: ' + error.message + '</div>';
+            }
+        }
+        
+        // 渲染区县按钮
+        function renderDistrictButtons(districts) {
+            let html = '';
+            districts.forEach(district => {
+                html += `<button class="model-btn" onclick="selectDistrict('${district}')">${district}</button>`;
+            });
+            document.getElementById('districtGrid').innerHTML = html;
+        }
+        
+        // 选择区县
+        function selectDistrict(district) {
+            currentDistrict = district;
+            updateDistrictChart(district);
+        }
+        
+        // 更新区县对比图表
+        function updateDistrictChart(district) {
+            if (!districtData || !districtData.district_data || !districtData.district_data[district]) {
+                document.getElementById('districtChart').innerHTML = '<div class="loading">该区县暂无数据</div>';
+                return;
+            }
+            
+            const data = districtData.district_data[district];
+            const traces = [];
+            
+            // 添加真实数据曲线（蓝色，加粗）
+            if (data.real_data && data.real_data.dates && data.real_data.values) {
+                traces.push({
+                    x: data.real_data.dates,
+                    y: data.real_data.values,
+                    type: 'scatter',
+                    mode: 'lines+markers',
+                    name: '真实数据',
+                    line: { color: '#3b82f6', width: 4 },
+                    marker: { size: 8, color: '#3b82f6' }
+                });
+            }
+            
+            // 添加各个模型的预测曲线
+            const colors = ['#ef4444', '#f97316', '#f59e0b', '#84cc16', '#10b981', '#06b6d4', 
+                           '#8b5cf6', '#ec4899', '#f43f5e', '#d946ef', '#14b8a6', '#fb923c'];
+            let colorIndex = 0;
+            
+            if (data.models) {
+                Object.keys(data.models).forEach(modelName => {
+                    const modelData = data.models[modelName];
+                    if (modelData && modelData.dates && modelData.values) {
+                        traces.push({
+                            x: modelData.dates,
+                            y: modelData.values,
+                            type: 'scatter',
+                            mode: 'lines+markers',
+                            name: modelName,
+                            line: { color: colors[colorIndex % colors.length], width: 2 },
+                            marker: { size: 5 }
+                        });
+                        colorIndex++;
+                    }
+                });
+            }
+            
+            const layout = {
+                title: district + ' - 所有模型预测对比',
+                xaxis: { 
+                    title: '日期',
+                    tickangle: -45
+                },
+                yaxis: { title: '病害发生程度' },
+                hovermode: 'closest',
+                showlegend: true,
+                legend: {
+                    x: 1.05,
+                    y: 1,
+                    orientation: 'v'
+                },
+                margin: { r: 150 }
+            };
+            
+            Plotly.newPlot('districtChart', traces, layout, {responsive: true});
+        }
+        
+        // 页面加载时
+        window.onload = loadModels;
+    </script>
+    
+    <!-- 底部版权信息 -->
+    <footer style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 2rem 0; margin-top: 4rem; text-align: center; font-size: 0.9rem; line-height: 1.8;">
+        <div style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+            <p style="margin: 0.5rem 0; font-weight: 600;">© 2025 AgriGuard Platform. 基于大数据与人工智能的病虫害预测预警系统</p>
+            <p style="margin: 0.5rem 0;">数据来源：北京市10区县植物诊所 | 2018-2021年时序数据</p>
+            <p style="margin: 0.5rem 0;">技术支持：时空预测模型 + 深度学习 + 大语言模型</p>
+            <p style="margin: 0.5rem 0;">开发单位：中国农业大学 信息与电气工程学院</p>
+            <p style="margin: 0.5rem 0;">开发团队：张领先教授团队 秦源泽等人</p>
+        </div>
+    </footer>
+</body>
+</html>
+

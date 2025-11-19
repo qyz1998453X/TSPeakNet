@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据分析与可视化 - 时空预测系统</title>
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .logo { font-size: 3rem; margin-bottom: 1rem; }
+        .title { font-size: 2.5rem; font-weight: 700; margin-bottom: 0.5rem; color: #2d3748; }
+        .subtitle { font-size: 1.3rem; color: #718096; }
+        .container { max-width: 1800px; margin: 0 auto; }
+        .nav-card { background: white; border-radius: 15px; padding: 1.5rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .back-btn { display: inline-block; padding: 0.75rem 1.5rem; background: #4a5568; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; transition: all 0.3s; }
+        .back-btn:hover { background: #2d3748; transform: translateY(-2px); }
+        
+        .analysis-selector { background: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .section-title { font-size: 1.5rem; font-weight: 700; color: #2d3748; margin-bottom: 1.5rem; }
+        .btn-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+        .analysis-btn { padding: 1rem; background: linear-gradient(135deg, #4a90e2 0%, #5a67d8 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s; font-size: 1rem; }
+        .analysis-btn:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(74, 144, 226, 0.4); }
+        .analysis-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-bottom: 2rem; }
+        .stat-card { background: white; border-radius: 15px; padding: 1.5rem; box-shadow: 0 10px 30px rgba(0,0,0,0.15); text-align: center; }
+        .stat-label { font-size: 0.9rem; color: #718096; margin-bottom: 0.5rem; }
+        .stat-value { font-size: 2.5rem; font-weight: 700; color: #4a90e2; }
+        
+        .chart-card { background: white; border-radius: 15px; padding: 2rem; margin-bottom: 2rem; box-shadow: 0 10px 30px rgba(0,0,0,0.15); }
+        .chart-title { font-size: 1.5rem; font-weight: 700; color: #2d3748; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid #e2e8f0; }
+        .chart-container { min-height: 400px; width: 100%; }
+        
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        .data-table th, .data-table td { padding: 0.75rem; text-align: left; border-bottom: 1px solid #e2e8f0; font-size: 0.9rem; }
+        .data-table th { background: #f7fafc; font-weight: 600; color: #4a5568; position: sticky; top: 0; }
+        .data-table tr:hover { background: #f7fafc; }
+        .table-wrapper { max-height: 500px; overflow-y: auto; }
+        
+        .loading { text-align: center; padding: 4rem; color: #718096; font-size: 1.2rem; }
+        .error { background: #fed7d7; color: #c53030; padding: 1.5rem; border-radius: 8px; margin: 1rem 0; }
+        .success { background: #d4edda; color: #155724; padding: 1rem; border-radius: 8px; margin: 1rem 0; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">📈</div>
+        <h1 class="title">数据分析与可视化</h1>
+        <p class="subtitle">原始数据多维度分析 - 10个区县病虫害数量 + 北京市气象数据</p>
+    </div>
+    
+    <div class="container">
+        <div class="nav-card">
+            <a href="http://localhost:8003/" class="back-btn">← 返回系统首页</a>
+        </div>
+        
+        <!-- 分析类型选择器 -->
+        <div class="analysis-selector">
+            <h2 class="section-title">选择分析类型</h2>
+            <div class="btn-grid">
+                <button class="analysis-btn active" onclick="showAnalysis('yearly')">📅 年度趋势</button>
+                <button class="analysis-btn" onclick="showAnalysis('monthly')">📊 月度分析</button>
+                <button class="analysis-btn" onclick="showAnalysis('regional')">🗺️ 区域对比</button>
+                <button class="analysis-btn" onclick="showAnalysis('heatmap')">🔥 热力图</button>
+                <button class="analysis-btn" onclick="showAnalysis('seasonal')">🌸 季节性分析</button>
+                <button class="analysis-btn" onclick="showAnalysis('weather')">🌤️ 气象关联</button>
+                <button class="analysis-btn" onclick="showAnalysis('raw')">📋 原始数据</button>
+            </div>
+        </div>
+        
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-label">总记录数</div>
+                <div class="stat-value" id="statTotal">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">时间跨度</div>
+                <div class="stat-value" id="statYears">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">区县数量</div>
+                <div class="stat-value" id="statRegions">-</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">气象指标</div>
+                <div class="stat-value" id="statWeather">7</div>
+            </div>
+        </div>
+        
+        <!-- 年度趋势 -->
+        <div id="yearlySection" class="chart-card">
+            <h2 class="chart-title">📅 年度趋势分析</h2>
+            <div id="yearlyChart" class="chart-container"><div class="loading">⏳ 加载中...</div></div>
+        </div>
+        
+        <!-- 月度分析 -->
+        <div id="monthlySection" class="chart-card" style="display:none;">
+            <h2 class="chart-title">📊 月度分析</h2>
+            <div id="monthlyChart" class="chart-container"><div class="loading">⏳ 加载中...</div></div>
+        </div>
+        
+        <!-- 区域对比 -->
+        <div id="regionalSection" class="chart-card" style="display:none;">
+            <h2 class="chart-title">🗺️ 区域对比分析</h2>
+            <div id="regionalChart" class="chart-container"><div class="loading">⏳ 加载中...</div></div>
+        </div>
+        
+        <!-- 热力图 -->
+        <div id="heatmapSection" class="chart-card" style="display:none;">
+            <h2 class="chart-title">🔥 时空热力图</h2>
+            <div id="heatmapChart" class="chart-container"><div class="loading">⏳ 加载中...</div></div>
+        </div>
+        
+        <!-- 季节性分析 -->
+        <div id="seasonalSection" class="chart-card" style="display:none;">
+            <h2 class="chart-title">🌸 季节性与周期性分析</h2>
+            <div id="seasonalChart" class="chart-container"><div class="loading">⏳ 加载中...</div></div>
+        </div>
+        
+        <!-- 气象关联 -->
+        <div id="weatherSection" class="chart-card" style="display:none;">
+            <h2 class="chart-title">🌤️ 气象因子关联分析</h2>
+            <div id="weatherChart" class="chart-container"><div class="loading">⏳ 加载中...</div></div>
+        </div>
+        
+        <!-- 原始数据 -->
+        <div id="rawSection" class="chart-card" style="display:none;">
+            <h2 class="chart-title">📋 原始数据</h2>
+            <div class="table-wrapper">
+                <div id="rawDataTable"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let yearlyData = [];
+        let monthlyData = [];
+        let regionalData = [];
+        let rawData = null;
+        
+        // 页面加载时
+        window.onload = async function() {
+            await loadAllData();
+        };
+        
+        // 加载所有数据
+        async function loadAllData() {
+            try {
+                // 加载年度数据
+                const yearlyRes = await fetch('/api/yearly-stats');
+                const yearlyJson = await yearlyRes.json();
+                console.log('年度数据:', yearlyJson);
+                if (yearlyJson.status === 'success' && yearlyJson.data) {
+                    yearlyData = yearlyJson.data;
+                    updateYearlyChart();
+                    updateStats();
+                }
+                
+                // 加载月度数据
+                const monthlyRes = await fetch('/api/monthly-stats');
+                const monthlyJson = await monthlyRes.json();
+                console.log('月度数据:', monthlyJson);
+                if (monthlyJson.status === 'success' && monthlyJson.data) {
+                    monthlyData = monthlyJson.data;
+                    updateMonthlyChart();
+                }
+                
+                // 加载区域数据
+                const regionalRes = await fetch('/api/regional-stats');
+                const regionalJson = await regionalRes.json();
+                console.log('区域数据:', regionalJson);
+                if (regionalJson.status === 'success' && regionalJson.data) {
+                    regionalData = regionalJson.data;
+                    updateRegionalChart();
+                }
+                
+                // 加载原始数据
+                const rawRes = await fetch('/api/raw-data');
+                const rawJson = await rawRes.json();
+                console.log('原始数据:', rawJson);
+                if (rawJson.status === 'success') {
+                    rawData = rawJson;
+                    updateRawDataTable();
+                    updateHeatmap();
+                    updateSeasonalAnalysis();
+                    updateWeatherCorrelation();
+                }
+                
+            } catch (error) {
+                console.error('数据加载失败:', error);
+                alert('数据加载失败: ' + error.message);
+            }
+        }
+        
+        // 切换分析类型
+        function showAnalysis(type) {
+            // 隐藏所有section
+            ['yearly', 'monthly', 'regional', 'heatmap', 'seasonal', 'weather', 'raw'].forEach(t => {
+                document.getElementById(t + 'Section').style.display = 'none';
+            });
+            
+            // 显示选中的section
+            document.getElementById(type + 'Section').style.display = 'block';
+            
+            // 更新按钮状态
+            document.querySelectorAll('.analysis-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        // 更新统计卡片
+        function updateStats() {
+            if (yearlyData.length > 0) {
+                const years = yearlyData.map(d => d.year);
+                document.getElementById('statTotal').textContent = yearlyData.reduce((sum, d) => sum + d.count, 0);
+                document.getElementById('statYears').textContent = `${Math.min(...years)}-${Math.max(...years)}`;
+            }
+            if (regionalData.length > 0) {
+                document.getElementById('statRegions').textContent = regionalData.length;
+            }
+        }
+        
+        // 更新年度趋势图
+        function updateYearlyChart() {
+            if (!yearlyData || yearlyData.length === 0) {
+                document.getElementById('yearlyChart').innerHTML = '<div class="error">❌ 年度数据为空</div>';
+                return;
+            }
+            
+            const layout = {
+                title: '各年度病虫害数量趋势',
+                xaxis: { title: '年份' },
+                yaxis: { title: '平均值' },
+                template: 'plotly_white',
+                height: 400
+            };
+            
+            const trace = {
+                x: yearlyData.map(d => d.year),
+                y: yearlyData.map(d => d.average),
+                type: 'scatter',
+                mode: 'lines+markers',
+                line: { color: '#4a90e2', width: 3 },
+                marker: { size: 12, color: '#5a67d8' },
+                name: '平均值'
+            };
+            
+            Plotly.newPlot('yearlyChart', [trace], layout, {responsive: true});
+        }
+        
+        // 更新月度分析图
+        function updateMonthlyChart() {
+            if (!monthlyData || monthlyData.length === 0) {
+                document.getElementById('monthlyChart').innerHTML = '<div class="error">❌ 月度数据为空</div>';
+                return;
+            }
+            
+            const layout = {
+                title: '月度病虫害数量分布',
+                xaxis: { title: '年-月' },
+                yaxis: { title: '平均值' },
+                template: 'plotly_white',
+                height: 400
+            };
+            
+            const trace = {
+                x: monthlyData.map(d => `${d.year}-${String(d.month).padStart(2, '0')}`),
+                y: monthlyData.map(d => d.average),
+                type: 'bar',
+                marker: { color: '#5a67d8' },
+                name: '月度平均值'
+            };
+            
+            Plotly.newPlot('monthlyChart', [trace], layout, {responsive: true});
+        }
+        
+        // 更新区域对比图
+        function updateRegionalChart() {
+            if (!regionalData || regionalData.length === 0) {
+                document.getElementById('regionalChart').innerHTML = '<div class="error">❌ 区域数据为空</div>';
+                return;
+            }
+            
+            const layout = {
+                title: '各区县病虫害数量对比',
+                xaxis: { title: '区县' },
+                yaxis: { title: '平均值' },
+                template: 'plotly_white',
+                height: 400
+            };
+            
+            const trace = {
+                x: regionalData.map(d => d.county),
+                y: regionalData.map(d => d.average),
+                type: 'bar',
+                marker: { 
+                    color: regionalData.map(d => d.average),
+                    colorscale: 'Blues'
+                },
+                name: '区域平均值'
+            };
+            
+            Plotly.newPlot('regionalChart', [trace], layout, {responsive: true});
+        }
+        
+        // 更新热力图
+        function updateHeatmap() {
+            if (!rawData || !rawData.data || rawData.data.length === 0) {
+                document.getElementById('heatmapChart').innerHTML = '<div class="error">❌ 数据不足</div>';
+                return;
+            }
+            
+            // 准备热力图数据：X=日期，Y=区县，Z=病虫害数量
+            const nodeCols = rawData.headers.filter(h => h.startsWith('Node_'));
+            const dates = rawData.data.map(d => d.Date).slice(0, 50); // 取前50天
+            const z = [];
+            
+            nodeCols.forEach(col => {
+                const values = rawData.data.slice(0, 50).map(d => d[col] || 0);
+                z.push(values);
+            });
+            
+            const layout = {
+                title: '时空热力图 - 各区县病虫害数量',
+                xaxis: { title: '日期' },
+                yaxis: { title: '区县', ticktext: nodeCols.map(c => c.replace('Node_', '')), tickvals: nodeCols.map((c, i) => i) },
+                template: 'plotly_white',
+                height: 500
+            };
+            
+            const trace = {
+                z: z,
+                x: dates,
+                y: nodeCols.map(c => c.replace('Node_', '')),
+                type: 'heatmap',
+                colorscale: 'YlOrRd',
+                colorbar: { title: '数量' }
+            };
+            
+            Plotly.newPlot('heatmapChart', [trace], layout, {responsive: true});
+        }
+        
+        // 更新季节性分析
+        function updateSeasonalAnalysis() {
+            if (!monthlyData || monthlyData.length === 0) {
+                document.getElementById('seasonalChart').innerHTML = '<div class="error">❌ 数据不足</div>';
+                return;
+            }
+            
+            // 按月份聚合（所有年份的1月、2月...）
+            const monthlyAvg = {};
+            monthlyData.forEach(d => {
+                if (!monthlyAvg[d.month]) {
+                    monthlyAvg[d.month] = { sum: 0, count: 0 };
+                }
+                monthlyAvg[d.month].sum += d.average;
+                monthlyAvg[d.month].count += 1;
+            });
+            
+            const months = [];
+            const avgValues = [];
+            for (let m = 1; m <= 12; m++) {
+                const monthNames = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+                months.push(monthNames[m-1]);
+                if (monthlyAvg[m]) {
+                    avgValues.push(monthlyAvg[m].sum / monthlyAvg[m].count);
+                } else {
+                    avgValues.push(0);
+                }
+            }
+            
+            const layout = {
+                title: '季节性周期分析 - 各月平均病虫害数量',
+                xaxis: { title: '月份' },
+                yaxis: { title: '平均值' },
+                template: 'plotly_white',
+                height: 400
+            };
+            
+            const trace = {
+                x: months,
+                y: avgValues,
+                type: 'scatter',
+                mode: 'lines+markers',
+                fill: 'tozeroy',
+                line: { color: '#f5576c', width: 3 },
+                marker: { size: 10, color: '#f093fb' },
+                name: '季节性趋势'
+            };
+            
+            Plotly.newPlot('seasonalChart', [trace], layout, {responsive: true});
+        }
+        
+        // 更新气象关联分析
+        function updateWeatherCorrelation() {
+            if (!rawData || !rawData.data || rawData.data.length === 0) {
+                document.getElementById('weatherChart').innerHTML = '<div class="error">❌ 数据不足</div>';
+                return;
+            }
+            
+            // 计算温度与病虫害的关系
+            const weatherCols = ['AT', 'MaxT', 'MinT', 'Precip'];
+            const nodeCols = rawData.headers.filter(h => h.startsWith('Node_'));
+            
+            // 选择第一个区县作为示例
+            if (nodeCols.length === 0) {
+                document.getElementById('weatherChart').innerHTML = '<div class="error">❌ 无区县数据</div>';
+                return;
+            }
+            
+            const targetNode = nodeCols[0];
+            const traces = [];
+            
+            weatherCols.forEach((weatherCol, idx) => {
+                if (!rawData.headers.includes(weatherCol)) return;
+                
+                const x = [];
+                const y = [];
+                rawData.data.forEach(row => {
+                    if (row[weatherCol] != null && row[targetNode] != null) {
+                        x.push(parseFloat(row[weatherCol]));
+                        y.push(parseFloat(row[targetNode]));
+                    }
+                });
+                
+                if (x.length > 0) {
+                    traces.push({
+                        x: x,
+                        y: y,
+                        mode: 'markers',
+                        type: 'scatter',
+                        name: weatherCol,
+                        marker: { size: 6 }
+                    });
+                }
+            });
+            
+            const layout = {
+                title: `气象因子与${targetNode.replace('Node_', '')}病虫害数量关系`,
+                xaxis: { title: '气象因子值' },
+                yaxis: { title: '病虫害数量' },
+                template: 'plotly_white',
+                height: 400,
+                showlegend: true
+            };
+            
+            Plotly.newPlot('weatherChart', traces, layout, {responsive: true});
+        }
+        
+        // 更新原始数据表格
+        function updateRawDataTable() {
+            if (!rawData || !rawData.data || rawData.data.length === 0) {
+                document.getElementById('rawDataTable').innerHTML = '<div class="error">❌ 无数据</div>';
+                return;
+            }
+            
+            let html = '<table class="data-table"><thead><tr>';
+            rawData.headers.forEach(header => {
+                html += `<th>${header}</th>`;
+            });
+            html += '</tr></thead><tbody>';
+            
+            rawData.data.slice(0, 100).forEach(row => {
+                html += '<tr>';
+                rawData.headers.forEach(header => {
+                    const value = row[header] != null ? row[header] : '';
+                    const displayValue = typeof value === 'number' ? value.toFixed(2) : value;
+                    html += `<td>${displayValue}</td>`;
+                });
+                html += '</tr>';
+            });
+            
+            html += '</tbody></table>';
+            html += `<p style="margin-top: 1rem; color: #718096; text-align: center;">显示前100条数据，共${rawData.total_rows}条记录</p>`;
+            
+            document.getElementById('rawDataTable').innerHTML = html;
+        }
+        
+        // 显示成功消息
+        function showSuccess(message) {
+            const div = document.createElement('div');
+            div.className = 'success';
+            div.textContent = '✅ ' + message;
+            document.querySelector('.container').insertBefore(div, document.querySelector('.stats-grid'));
+            setTimeout(() => div.remove(), 3000);
+        }
+    </script>
+</body>
+</html>
