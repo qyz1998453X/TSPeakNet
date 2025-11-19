@@ -19,18 +19,18 @@
   ## 📸 系统展示
   
   ### 🏠 主页 - 功能导航
-  ![image-20251118105536358](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118105536358.png)
+  ![image-20251118105536358](README.assets\image-20251118105536358.png)
   
   ### 📊 数据分析 - 多维可视化
-  ![image-20251118105613532](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118105613532.png)
+  ![image-20251118105613532](README.assets\image-20251118105613532.png)
   
   
   
-  ![image-20251118105632452](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118105632452.png)
+  ![image-20251118105632452](README.assets\image-20251118105632452.png)
   
-  ![image-20251118105714655](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118105714655.png)
+  ![image-20251118105714655](README.assets\image-20251118105714655.png)
   
-  ![image-20251118105746599](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118105746599.png)
+  ![image-20251118105746599](README.assets\image-20251118105746599.png)
   
   ![image-20251118105805674](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118105805674.png)
   
@@ -269,4 +269,5 @@
   ## 联系方式
 
   - **技术支持**: zhanglx@cau.edu.cn    qinyuanze@cau.edu.cn 
-  - **项目主页**: [GitHub链接]
+  - **项目主页**: [Github链接(https://github.com/qyz1998453X/TSPeakNet.git)]
+
