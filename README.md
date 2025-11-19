@@ -19,39 +19,39 @@
   ## 📸 系统展示
   
   ### 🏠 主页 - 功能导航
-  ![image-20251118105536358](README.assets\image-20251118105536358.png)
+  ![image-20251118105536358](README.assets\/image-20251118105536358.png)
   
   ### 📊 数据分析 - 多维可视化
-  ![image-20251118105613532](README.assets\image-20251118105613532.png)
+  ![image-20251118105613532](README.assets\/image-20251118105613532.png)
   
   
   
-  ![image-20251118105632452](README.assets\image-20251118105632452.png)
+  ![image-20251118105632452](README.assets\/image-20251118105632452.png)
   
-  ![image-20251118105714655](README.assets\image-20251118105714655.png)
+  ![image-20251118105714655](README.assets\/image-20251118105714655.png)
   
-  ![image-20251118105746599](README.assets\image-20251118105746599.png)
+  ![image-20251118105746599](README.assets\/image-20251118105746599.png)
   
-  ![image-20251118105805674](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118105805674.png)
+  ![image-20251118105805674](README.assets\/image-20251118105805674.png)
   
-  ![image-20251118105822093](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118105822093.png)
+  ![image-20251118105822093](README.assets\/image-20251118105822093.png)
   
   *年度、月度、区域多维度统计分析，交互式图表*
   
   ### 🔮 模型预测 - 12种AI模型对比
-  ![image-20251118132308853](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118132308853.png)
+  ![image-20251118132308853](README.assets\/image-20251118132308853.png)
   *集成TSPeakNet、LSTM、GRU等12种深度学习模型*
   
   ### 🗺️ 区域预警 - 实时风险地图
-  ![image-20251118132550848](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118132550848.png)
+  ![image-20251118132550848](README.assets\/image-20251118132550848.png)
   *北京市区县级预警地图，颜色分级展示风险*
   
   ### 🌐 英文版界面 - 国际化支持
-  ![image-20251118132538433](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118132538433.png)
+  ![image-20251118132538433](README.assets\/image-20251118132538433.png)
   **
   
   ### 🦠 病害详情 - 专业知识库
-  ![image-20251118132633146](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118132633146.png)
+  ![image-20251118132633146](README.assets\/image-20251118132633146.png)
   
   *点击查看详细病害特征、发生规律、防治措施*
   
@@ -270,4 +270,5 @@
 
   - **技术支持**: zhanglx@cau.edu.cn    qinyuanze@cau.edu.cn 
   - **项目主页**: [Github链接(https://github.com/qyz1998453X/TSPeakNet.git)]
+
 
