@@ -1,274 +1,294 @@
-- # AgriGuard Platform - 病虫害时空预测预警系统
+# AgriGuard Platform — Spatiotemporal Crop Pest and Disease Forecasting and Early Warning System
 
-  <p align="center">
-    <img src="https://img.shields.io/badge/Python-3.7+-blue.svg" alt="Python">
-    <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
-    <img src="https://img.shields.io/badge/Deep%20Learning-12%20Models-orange.svg" alt="Models">
-    <img src="https://img.shields.io/badge/Status-Active-success.svg" alt="Status">
-  </p>
+<p align="center">
+  <img src="https://img.shields.io/badge/Python-3.7+-blue.svg" alt="Python">
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
+  <img src="https://img.shields.io/badge/Deep%20Learning-12%20Models-orange.svg" alt="Models">
+  <img src="https://img.shields.io/badge/Status-Active-success.svg" alt="Status">
+</p>
 
-  <p align="center">
-    <strong>基于大数据与人工智能的作物病虫害预测预警系统</strong>
-    <br>
-    <em>AI-Powered Crop Pest and Disease Forecasting & Early Warning System</em>
-    <br>
-    <em>TSPeakNet: Dual-scale time-series modeling for district-level crop-disease forecasting and peak-event warning</em>
-    <br>
-    <em>Yuanze Qin et al</em>
-  </p>
-  ## 📸 系统展示
-  
-  ### 🏠 主页 - 功能导航
-  ![image-20251118105536358](README.assets\/image-20251118105536358.png)
-  
-  ### 📊 数据分析 - 多维可视化
-  ![image-20251118105613532](README.assets\/image-20251118105613532.png)
-  
-  
-  
-  ![image-20251118105632452](README.assets\/image-20251118105632452.png)
-  
-  ![image-20251118105714655](README.assets\/image-20251118105714655.png)
-  
-  ![image-20251118105746599](README.assets\/image-20251118105746599.png)
-  
-  ![image-20251118105805674](README.assets\/image-20251118105805674.png)
-  
-  ![image-20251118105822093](README.assets\/image-20251118105822093.png)
-  
-  *年度、月度、区域多维度统计分析，交互式图表*
-  
-  ### 🔮 模型预测 - 12种AI模型对比
-  ![image-20251118132308853](README.assets\/image-20251118132308853.png)
-  *集成TSPeakNet、LSTM、GRU等12种深度学习模型*
-  
-  ### 🗺️ 区域预警 - 实时风险地图
-  ![image-20251118132550848](README.assets\/image-20251118132550848.png)
-  *北京市区县级预警地图，颜色分级展示风险*
-  
-  ### 🌐 英文版界面 - 国际化支持
-  ![image-20251118132538433](README.assets\/image-20251118132538433.png)
-  **
-  
-  ### 🦠 病害详情 - 专业知识库
-  ![image-20251118132633146](README.assets\/image-20251118132633146.png)
-  
-  *点击查看详细病害特征、发生规律、防治措施*
-  
-  ### 📝 数据采集 - 病历录入
-  ![image-20251118132732173](C:\Users\CAU\Desktop\Github上传\README.assets\image-20251118132732173.png)
-  *病历数据和气象数据录入界面，支持多字段表单*
-  
-  ---
-  
-  ## 🌟 核心特性
-  
-  - 🌾 **多维度数据分析** - 整合多年时序数据，支持年度、月度、区域多维度统计分析
-  - 🔮 **智能预测模型** - 集成12种深度学习模型，包括TSPeakNet、LSTM、GRU、Transformer等
-  - 🗺️ **区域预警可视化** - 实时区域风险地图，精准到区县级别的预警信息
-  - 📊 **交互式图表** - 基于ECharts和Plotly的动态数据可视化
-  - 🌐 **多语言支持** - 中英双语界面，支持国际化应用
-  - 🎯 **事件级评估** - 峰值检测、时间匹配、提前预警时间计算
-  
-  ## 🏗️ 技术架构
-  
-  ```
-  ┌─────────────────────────────────────────────────────┐
-  │                   前端展示层                          │
-  │   ECharts 5.x | Plotly.js | HTML5 | CSS3 | ES6+   │
-  └─────────────────────┬───────────────────────────────┘
-                        │
-  ┌─────────────────────┴───────────────────────────────┐
-  │                   业务逻辑层                          │
-  │   Python 3.8+ | HTTP Server | Data Processing      │
-  └─────────────────────┬───────────────────────────────┘
-                        │
-  ┌─────────────────────┴───────────────────────────────┐
-  │                   AI模型层                           │
-  │   TSPeakNet | LSTM | GRU | Transformer | 12 Models │
-  └─────────────────────┬───────────────────────────────┘
-                        │
-  ┌─────────────────────┴───────────────────────────────┐
-  │                   数据层                             │
-  │   Excel (openpyxl) | Time Series | GeoJSON         │
-  └─────────────────────────────────────────────────────┘
-  ```
-  
-  **技术栈**:
-  - **后端**: Python 3.8+, openpyxl
-  - **前端**: HTML5, CSS3, JavaScript (ES6+)
-  - **可视化**: ECharts 5.x, Plotly.js
-  - **AI模型**: 时空预测模型 + 深度学习
-  
-  ## 📊 数据来源
-  
-  - **数据源**: 北京市10区县植物诊所电子病历系统 (PEMR)
-  - **时间范围**: 2018-2021年连续时序数据
-  - **空间范围**: 大兴区、密云区、平谷区、延庆区、怀柔区、房山区、昌平区、海淀区、通州区、顺义区
-  - **数据量**: 覆盖4年 × 10区县 × 365天的病虫害监测记录
-  
-  ---
-  
-  ## ⚡ 快速开始
-  
-  ### 安装运行（3步搞定）
-  
-  ```bash
-  # 1. 安装依赖
-  pip install openpyxl
-  
-  # 2. 启动服务器
-  python prediction_server.py
-  
-  # 3. 访问系统
-  # 浏览器打开 http://localhost:8003
-  ```
-  
-  ### 主要页面
-  
-  | 页面 | 地址 | 功能 |
-  |------|------|------|
-  | 🏠 主页 | `/` | 系统导航和概览 |
-  | 📝 数据采集 | `/data-collection` | 病历和气象数据录入 |
-  | 📊 数据分析 | `/data-analysis` | 多维统计分析和可视化 |
-  | 🔮 模型预测 | `/model-prediction` | 12种模型预测对比 |
-  | 🗺️ 区域预警 | `/regional-warning` | 实时风险地图（中文版） |
-  | 🌐 English Warning | `/regional-warning-en` | Risk map (English) |
-  
-  ---
-  
-  ## 🎯 系统亮点
-  
-  ### 1. � 区县级模型对比 - 全国首创
-  一张图展示12个深度学习模型在单个区县的预测效果，真实数据vs预测数据直观对比
-  - **技术创新**: 宽格式数据自动转换，支持任意区县选择
-  - **可视化**: Plotly.js交互式折线图，支持缩放、悬停查看
-  - **实用价值**: 帮助选择最优模型进行区县级精准预测
-  
-  ### 2. 🗺️ 实时预警地图 - 动态风险监控
-  ECharts驱动的北京市区县风险地图，颜色分级一目了然
-  - **5级预警**: 从正常(绿)到紧急(深红)的渐变色编码
-  - **实时更新**: 基于最新预测模型动态计算风险等级
-  - **交互体验**: 悬停显示详情，点击查看历史趋势
-  
-  ### 3. 🦠 智能病害知识库 - AI生成内容
-  点击病害卡片，弹出详细的专业知识
-  - **内容丰富**: 特征、原因、地区、季节、防治措施
-  - **AI生成**: 基于大语言模型生成的专业植保知识
-  - **用户友好**: 美观的模态框设计，分类清晰
-  
+<p align="center">
+  <strong>AI-powered crop pest and disease forecasting and early warning system based on big data and artificial intelligence</strong>
+  <br>
+  <em>AgriGuard Platform: AI-Powered Crop Pest and Disease Forecasting & Early Warning System</em>
+  <br>
+  <em>TSPeakNet: Dual-scale time-series modeling for district-level crop-disease forecasting and peak-event warning</em>
+  <br>
+  <em>Yuanze Qin et al.</em>
+</p>
 
 ---
 
-  ## 项目结构
+## 📸 System Screenshots
 
-  ```
-  spatiotemporal_prediction_system/
-  ├── prediction_server.py          # 主服务器文件
-  ├── simple_data_reader.py         # 数据读取模块
-  ├── data_analyzer.py              # 数据分析模块
-  ├── data_collector.py             # 数据采集模块
-  ├── model_prediction_page.html    # 模型预测页面
-  ├── requirements.txt              # Python依赖
-  ├── README.md                     # 本说明文档
-  ├── 时序数据/                     # 数据目录
-  │   ├── 原始数据.xlsx
-  │   ├── LSTM-预测数据.xlsx
-  │   ├── GRU-预测数据.xlsx
-  │   ├── TSPeakNet-预测模型.xlsx
-  │   ├── ... (其他模型预测数据)
-  │   └── 北京.json                 # 地图数据
-  └── static/                       # 静态资源目录
-  ```
+### 🏠 Home Page — Function Navigation
 
----
+![Home page](README.assets/image-20251118105536358.png)
 
-  ### 数据准备
+### 📊 Data Analysis — Multidimensional Visualization
 
-  **原始数据格式** (`原始数据.xlsx`):
-  ```
-  Date        | Node_DaXing | Node_MiYun | Node_PingGu | ...
-  2018-09-25  | 3.65        | 15.71      | 16.32       | ...
-  2018-09-26  | 4.23        | 14.88      | 17.45       | ...
-  ```
+![Data analysis 1](README.assets/image-20251118105613532.png)
 
-  **预测数据格式** (`LSTM-预测数据.xlsx`):
-  ```
-  Date        | Node_DaXing | Node_MiYun | Node_PingGu | ...
-  2021-01-01  | 2.34        | 12.45      | 15.67       | ...
-  2021-01-02  | 2.56        | 13.21      | 16.23       | ...
-  ```
+![Data analysis 2](README.assets/image-20251118105632452.png)
 
----
+![Data analysis 3](README.assets/image-20251118105714655.png)
 
-  ## 技术细节
+![Data analysis 4](README.assets/image-20251118105746599.png)
 
-  ### 模型预测流程
+![Data analysis 5](README.assets/image-20251118105805674.png)
 
-  ```
-  历史时序数据
-      ↓
-  特征工程
-      ↓
-  深度学习模型 (12种)
-      ↓
-  预测结果生成
-      ↓
-  性能评估 (MAE/RMSE/R²)
-      ↓
-  可视化对比
-  ```
+![Data analysis 6](README.assets/image-20251118105822093.png)
 
-  ### 预警生成逻辑
+*Interactive charts for annual, monthly, regional, and multidimensional statistical analysis.*
 
-  ```
-  实时数据采集
-      ↓
-  时空预测模型
-      ↓
-  风险等级评估
-      ↓
-  阈值判断
-      ↓
-  生成预警信息
-      ↓
-  地图可视化
-  ```
+### 🔮 Model Prediction — Comparison of 12 AI Models
+
+![Model prediction](README.assets/image-20251118132308853.png)
+
+*The platform integrates 12 deep-learning models, including TSPeakNet, LSTM, GRU, and related baselines.*
+
+### 🗺️ Regional Warning — Real-time Risk Map
+
+![Regional warning](README.assets/image-20251118132550848.png)
+
+*District-level early warning map for Beijing, with color-coded risk levels.*
+
+### 🌐 English Interface — Internationalization Support
+
+![English interface](README.assets/image-20251118132538433.png)
+
+### 🦠 Disease Details — Professional Knowledge Base
+
+![Disease details](README.assets/image-20251118132633146.png)
+
+*Users can click a disease card to view detailed information on disease characteristics, occurrence patterns, and control measures.*
+
+### 📝 Data Collection — PEMR Entry
+
+![Data collection](README.assets/image-20251118132732173.png)
+
+*Data-entry interface for plant medical records and meteorological information, supporting multi-field forms.*
 
 ---
 
-  ## 版权与引用
+## 🌟 Key Features
 
-  ### 版权信息
-
-  © 2025 AgriGuard Platform. 基于大数据与人工智能的病虫害预测预警系统
-
-  **数据来源**: 北京市10区县植物诊所 | 2018-2021年处方数据 
-  **技术支持**: 时空预测模型 + 深度学习 + 大语言模型 
-  **开发单位**: 中国农业大学 信息与电气工程学院 
-  **开发团队**: 张领先教授团队 秦源泽等人
-
-  ### 学术引用
-
-  如使用本系统或相关技术，请引用以下论文:
-
-  ```bibtex
-  @article{qin2025tspeaknet,
-    title={TSPeakNet: Dual-scale time-series modeling for district-level crop-disease forecasting and peak-event warning},
-    author={Qin, Yuanze and Han, Zonghuan and Zhang, Lingxian and Zhang, Yiding},
-    year={2025}
-  }
-  ```
-
-  ### 开源协议
-
-  本项目采用 [MIT License / Apache 2.0] 开源协议
+- 🌾 **Multidimensional data analysis** — Integrates multiyear time-series data and supports annual, monthly, regional, and multidimensional statistical analysis.
+- 🔮 **Intelligent forecasting models** — Integrates 12 deep-learning models, including TSPeakNet, LSTM, GRU, and Transformer-based models.
+- 🗺️ **Regional early-warning visualization** — Provides real-time district-level risk maps and early-warning information.
+- 📊 **Interactive charts** — Uses ECharts and Plotly to provide dynamic and interactive data visualization.
+- 🌐 **Multilingual support** — Provides Chinese and English interfaces for international use.
+- 🎯 **Event-level evaluation** — Supports peak detection, temporal matching, and early-warning lead-time calculation.
 
 ---
 
-  ## 联系方式
+## 🏗️ Technical Architecture
 
-  - **技术支持**: zhanglx@cau.edu.cn    qinyuanze@cau.edu.cn 
-  - **项目主页**: [Github链接(https://github.com/qyz1998453X/TSPeakNet.git)]
+```text
+┌─────────────────────────────────────────────────────┐
+│                 Front-end Presentation Layer         │
+│   ECharts 5.x | Plotly.js | HTML5 | CSS3 | ES6+     │
+└─────────────────────┬───────────────────────────────┘
+                      │
+┌─────────────────────┴───────────────────────────────┐
+│                 Business Logic Layer                 │
+│   Python 3.8+ | HTTP Server | Data Processing        │
+└─────────────────────┬───────────────────────────────┘
+                      │
+┌─────────────────────┴───────────────────────────────┐
+│                 AI Modeling Layer                    │
+│   TSPeakNet | LSTM | GRU | Transformer | 12 Models   │
+└─────────────────────┬───────────────────────────────┘
+                      │
+┌─────────────────────┴───────────────────────────────┐
+│                 Data Layer                           │
+│   Excel (openpyxl) | Time Series | GeoJSON           │
+└─────────────────────────────────────────────────────┘
+```
 
+**Technology stack**
 
+- **Back end**: Python 3.8+, openpyxl
+- **Front end**: HTML5, CSS3, JavaScript (ES6+)
+- **Visualization**: ECharts 5.x, Plotly.js
+- **AI models**: Spatiotemporal forecasting models and deep-learning models
+
+---
+
+## 📊 Data Sources
+
+- **Data source**: Plant Electronic Medical Records (PEMRs) from plant clinics in 10 districts of Beijing
+- **Time span**: Continuous time-series data from 2018 to 2021
+- **Spatial coverage**: Daxing, Miyun, Pinggu, Yanqing, Huairou, Fangshan, Changping, Haidian, Tongzhou, and Shunyi districts
+- **Data scale**: Pest and disease monitoring records covering 4 years × 10 districts × 365 days
+
+---
+
+## ⚡ Quick Start
+
+### Installation and Launch
+
+```bash
+# 1. Install dependencies
+pip install openpyxl
+
+# 2. Start the server
+python prediction_server.py
+
+# 3. Open the system in a browser
+# http://localhost:8003
+```
+
+### Main Pages
+
+| Page | URL | Function |
+|---|---|---|
+| 🏠 Home | `/` | System navigation and overview |
+| 📝 Data Collection | `/data-collection` | Entry of plant medical records and meteorological data |
+| 📊 Data Analysis | `/data-analysis` | Multidimensional statistical analysis and visualization |
+| 🔮 Model Prediction | `/model-prediction` | Prediction comparison across 12 models |
+| 🗺️ Regional Warning | `/regional-warning` | Real-time regional risk map (Chinese version) |
+| 🌐 English Warning | `/regional-warning-en` | Risk map (English version) |
+
+---
+
+## 🎯 System Highlights
+
+### 1. District-level Model Comparison
+
+The system visualizes the prediction performance of 12 deep-learning models for individual districts, enabling intuitive comparison between observed and predicted values.
+
+- **Technical innovation**: Automatically converts wide-format data and supports district-level selection.
+- **Visualization**: Provides interactive line charts based on Plotly.js, including zooming and hover-based inspection.
+- **Practical value**: Helps identify suitable models for precise district-level forecasting.
+
+### 2. Real-time Early-warning Map
+
+The Beijing district-level risk map is driven by ECharts and provides color-coded risk visualization.
+
+- **Five warning levels**: Risk levels range from normal (green) to emergency (dark red).
+- **Real-time update**: Risk levels are dynamically calculated using model predictions.
+- **Interactive experience**: Users can hover for details and click to view historical trends.
+
+### 3. Intelligent Disease Knowledge Base
+
+Users can click disease cards to open structured plant-protection knowledge.
+
+- **Rich content**: Includes symptoms, causes, affected regions, seasons, and control measures.
+- **AI-assisted content**: Provides plant-protection knowledge generated or organized with AI assistance.
+- **User-friendly interface**: Uses clean modal windows with clear information categories.
+
+---
+
+## Project Structure
+
+```text
+spatiotemporal_prediction_system/
+├── prediction_server.py          # Main server file
+├── simple_data_reader.py         # Data reading module
+├── data_analyzer.py              # Data analysis module
+├── data_collector.py             # Data collection module
+├── model_prediction_page.html    # Model prediction page
+├── requirements.txt              # Python dependencies
+├── README.md                     # Project documentation
+├── 时序数据/                     # Data directory
+│   ├── 原始数据.xlsx
+│   ├── LSTM-预测数据.xlsx
+│   ├── GRU-预测数据.xlsx
+│   ├── TSPeakNet-预测模型.xlsx
+│   ├── ... (other model prediction files)
+│   └── 北京.json                 # Map data
+└── static/                       # Static assets
+```
+
+---
+
+## Data Preparation
+
+**Raw data format** (`原始数据.xlsx`):
+
+```text
+Date        | Node_DaXing | Node_MiYun | Node_PingGu | ...
+2018-09-25  | 3.65        | 15.71      | 16.32       | ...
+2018-09-26  | 4.23        | 14.88      | 17.45       | ...
+```
+
+**Prediction data format** (`LSTM-预测数据.xlsx`):
+
+```text
+Date        | Node_DaXing | Node_MiYun | Node_PingGu | ...
+2021-01-01  | 2.34        | 12.45      | 15.67       | ...
+2021-01-02  | 2.56        | 13.21      | 16.23       | ...
+```
+
+---
+
+## Technical Details
+
+### Model Prediction Workflow
+
+```text
+Historical time-series data
+        ↓
+Feature engineering
+        ↓
+Deep-learning models (12 models)
+        ↓
+Prediction generation
+        ↓
+Performance evaluation (MAE/RMSE/R²)
+        ↓
+Visual comparison
+```
+
+### Early-warning Generation Logic
+
+```text
+Real-time data collection
+        ↓
+Spatiotemporal forecasting model
+        ↓
+Risk-level assessment
+        ↓
+Threshold-based decision
+        ↓
+Early-warning generation
+        ↓
+Map-based visualization
+```
+
+---
+
+## Copyright and Citation
+
+### Copyright
+
+© 2025 AgriGuard Platform. AI-powered crop pest and disease forecasting and early warning system based on big data and artificial intelligence.
+
+**Data source**: Plant clinics in 10 districts of Beijing | Prescription data from 2018 to 2021  
+**Technical support**: Spatiotemporal forecasting models + deep learning + large language models  
+**Developer affiliation**: College of Information and Electrical Engineering, China Agricultural University  
+**Development team**: Prof. Lingxian Zhang's team, including Yuanze Qin and collaborators
+
+### Academic Citation
+
+If you use this system or related methods, please cite the following work:
+
+```bibtex
+@article{qin2025tspeaknet,
+  title={TSPeakNet: Dual-scale time-series modeling for district-level crop-disease forecasting and peak-event warning},
+  author={Qin, Yuanze and Han, Zonghuan and Zhang, Lingxian and Zhang, Yiding},
+  year={2025}
+}
+```
+
+### License
+
+This project is released under the [MIT License / Apache 2.0] open-source license.
+
+---
+
+## Contact
+
+- **Technical support**: zhanglx@cau.edu.cn; qinyuanze@cau.edu.cn
+- **Project homepage**: [GitHub Repository](https://github.com/qyz1998453X/TSPeakNet.git)
