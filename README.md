@@ -1,31 +1,65 @@
-# AgriGuard Platform — Spatiotemporal Crop Pest and Disease Forecasting and Early Warning System
+# TSPeakNet — District-Level Crop Pest and Disease Time-Series Forecasting and Peak-Event Detection
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Python-3.7+-blue.svg" alt="Python">
-  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="License">
-  <img src="https://img.shields.io/badge/Deep%20Learning-12%20Models-orange.svg" alt="Models">
-  <img src="https://img.shields.io/badge/Status-Active-success.svg" alt="Status">
+  <img src="https://img.shields.io/badge/Python-3.7.7-blue.svg" alt="Python 3.7.7">
+  <img src="https://img.shields.io/badge/PyTorch-1.10.2-orange.svg" alt="PyTorch 1.10.2">
+  <img src="https://img.shields.io/badge/License-MIT-green.svg" alt="MIT License">
+  <img src="https://img.shields.io/badge/Status-Research%20Code-success.svg" alt="Research code">
 </p>
 
 <p align="center">
-  <strong>AI-powered crop pest and disease forecasting and early warning system based on big data and artificial intelligence</strong>
+  <strong>Dual-scale neural forecasting and peak-event detection for district-level crop pest and disease warning support</strong>
   <br>
-  <em>AgriGuard Platform: AI-Powered Crop Pest and Disease Forecasting & Early Warning System</em>
+  <em>TSPeakNet: A dual-scale neural architecture for district-level crop pest and disease time-series forecasting and peak-event detection</em>
   <br>
-  <em>TSPeakNet: Dual-scale time-series modeling for district-level crop-disease forecasting and peak-event warning</em>
-  <br>
-  <em>Yuanze Qin et al.</em>
+  <em>Yuanze Qin, Zonghuan Han, Lingxian Zhang, and Yiding Zhang</em>
 </p>
 
 ---
 
-## 📸 System Screenshots
+## Overview
 
-### 🏠 Home Page — Function Navigation
+This repository contains the complete implementation of **TSPeakNet**, a dual-branch neural architecture for district-level crop pest and disease prescription-count forecasting and peak-event detection. It also includes the associated warning-support platform, model evaluation scripts, interpretability utilities, and system performance-testing tools.
+
+The Beijing experiments use district-level time series derived from **Plant Electronic Medical Records (PEMRs)**. PEMR-derived prescription counts are treated as **operational proxies for pest and disease service demand**, rather than direct measurements of biological incidence or severity. Accordingly, model outputs should be interpreted as prescription-count forecasts, peak-event indicators, and demand-oriented risk signals for inspection planning and resource allocation.
+
+---
+
+## Main Components
+
+- **TSPeakNet forecasting model**  
+  A short-window branch models local fluctuations, while a long-window branch represents broader temporal patterns.
+
+- **Period-KAN module**  
+  Dual-period two-dimensional convolutions capture multi-scale seasonality, and spline-based Kolmogorov–Arnold Network layers model flexible nonlinear mappings.
+
+- **AdaptiveMix fusion**  
+  Sample-wise branch weights combine short- and long-window predictions and provide model-internal diagnostics of temporal-scale allocation.
+
+- **Event-level peak detection**  
+  The evaluation protocol uses training-derived district-specific thresholds, contiguous-event merging, one-to-one temporal matching, signed timing-error assessment, and peak-height bias.
+
+- **Model interpretation and diagnostics**  
+  Utilities are provided for AdaptiveMix-weight analysis, KAN activation visualization, and SHAP-based post-hoc attribution.
+
+- **Benchmarking and sensitivity analysis**  
+  The repository includes forecasting baselines, ablation experiments, learning-rate scheduler analysis, sparse-count metrics, and runtime evaluation.
+
+- **Warning-support platform**  
+  A web-based dashboard visualizes district-level prescription-count forecasts, demand-oriented risk patterns, peak-event indicators, and model comparisons.
+
+- **External validation**  
+  The model is also evaluated on a public weekly aphid-trapping dataset from Coxilha and Passo Fundo.
+
+---
+
+## System Screenshots
+
+### Home Page
 
 ![Home page](README.assets/image-20251118105536358.png)
 
-### 📊 Data Analysis — Multidimensional Visualization
+### Data Analysis
 
 ![Data analysis 1](README.assets/image-20251118105613532.png)
 
@@ -39,256 +73,288 @@
 
 ![Data analysis 6](README.assets/image-20251118105822093.png)
 
-*Interactive charts for annual, monthly, regional, and multidimensional statistical analysis.*
+*Interactive visualizations for annual, monthly, regional, and multidimensional exploratory analysis.*
 
-### 🔮 Model Prediction — Comparison of 12 AI Models
+### Model Prediction
 
 ![Model prediction](README.assets/image-20251118132308853.png)
 
-*The platform integrates 12 deep-learning models, including TSPeakNet, LSTM, GRU, and related baselines.*
+*Comparison of TSPeakNet with multiple forecasting baselines.*
 
-### 🗺️ Regional Warning — Real-time Risk Map
+### Regional Warning-Support Dashboard
 
 ![Regional warning](README.assets/image-20251118132550848.png)
 
-*District-level early warning map for Beijing, with color-coded risk levels.*
+*District-level visualization of demand-oriented risk patterns and peak-event indicators.*
 
-### 🌐 English Interface — Internationalization Support
+### English Interface
 
 ![English interface](README.assets/image-20251118132538433.png)
 
-### 🦠 Disease Details — Professional Knowledge Base
+### Pest and Disease Knowledge Panel
 
 ![Disease details](README.assets/image-20251118132633146.png)
 
-*Users can click a disease card to view detailed information on disease characteristics, occurrence patterns, and control measures.*
+*Structured information on symptoms, occurrence patterns, and management measures.*
 
-### 📝 Data Collection — PEMR Entry
+### PEMR Data Entry
 
 ![Data collection](README.assets/image-20251118132732173.png)
 
-*Data-entry interface for plant medical records and meteorological information, supporting multi-field forms.*
+*Data-entry interface for standardized plant-clinic records and related contextual information.*
 
 ---
 
-## 🌟 Key Features
-
-- 🌾 **Multidimensional data analysis** — Integrates multiyear time-series data and supports annual, monthly, regional, and multidimensional statistical analysis.
-- 🔮 **Intelligent forecasting models** — Integrates 12 deep-learning models, including TSPeakNet, LSTM, GRU, and Transformer-based models.
-- 🗺️ **Regional early-warning visualization** — Provides real-time district-level risk maps and early-warning information.
-- 📊 **Interactive charts** — Uses ECharts and Plotly to provide dynamic and interactive data visualization.
-- 🌐 **Multilingual support** — Provides Chinese and English interfaces for international use.
-- 🎯 **Event-level evaluation** — Supports peak detection, temporal matching, and early-warning lead-time calculation.
-
----
-
-## 🏗️ Technical Architecture
+## Technical Architecture
 
 ```text
-┌─────────────────────────────────────────────────────┐
-│                 Front-end Presentation Layer         │
-│   ECharts 5.x | Plotly.js | HTML5 | CSS3 | ES6+     │
-└─────────────────────┬───────────────────────────────┘
-                      │
-┌─────────────────────┴───────────────────────────────┐
-│                 Business Logic Layer                 │
-│   Python 3.8+ | HTTP Server | Data Processing        │
-└─────────────────────┬───────────────────────────────┘
-                      │
-┌─────────────────────┴───────────────────────────────┐
-│                 AI Modeling Layer                    │
-│   TSPeakNet | LSTM | GRU | Transformer | 12 Models   │
-└─────────────────────┬───────────────────────────────┘
-                      │
-┌─────────────────────┴───────────────────────────────┐
-│                 Data Layer                           │
-│   Excel (openpyxl) | Time Series | GeoJSON           │
-└─────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────┐
+│                  Presentation Layer                       │
+│       ECharts 5.x | Plotly.js | HTML5 | CSS3 | ES6+      │
+└──────────────────────────┬────────────────────────────────┘
+                           │
+┌──────────────────────────┴────────────────────────────────┐
+│                 Application Layer                         │
+│       Flask | HTTP services | Data processing             │
+└──────────────────────────┬────────────────────────────────┘
+                           │
+┌──────────────────────────┴────────────────────────────────┐
+│                   Modeling Layer                          │
+│ TSPeakNet | Statistical, ML, and deep-learning baselines  │
+└──────────────────────────┬────────────────────────────────┘
+                           │
+┌──────────────────────────┴────────────────────────────────┐
+│                     Data Layer                            │
+│        PEMR time series | Excel | GeoJSON                 │
+└───────────────────────────────────────────────────────────┘
 ```
 
-**Technology stack**
+### Tested Research Environment
 
-- **Back end**: Python 3.8+, openpyxl
-- **Front end**: HTML5, CSS3, JavaScript (ES6+)
-- **Visualization**: ECharts 5.x, Plotly.js
-- **AI models**: Spatiotemporal forecasting models and deep-learning models
+- **Operating system**: Windows 10
+- **Python**: 3.7.7
+- **PyTorch**: 1.10.2
+- **CUDA**: 11.1
+- **GPU**: NVIDIA GeForce RTX 4070 Ti
+- **Web framework**: Flask
+- **Visualization**: ECharts and Plotly
+- **Data processing**: NumPy, pandas, SciPy, scikit-learn, statsmodels, and openpyxl
 
----
-
-## 📊 Data Sources
-
-- **Data source**: Plant Electronic Medical Records (PEMRs) from plant clinics in 10 districts of Beijing
-- **Time span**: Continuous time-series data from 2018 to 2021
-- **Spatial coverage**: Daxing, Miyun, Pinggu, Yanqing, Huairou, Fangshan, Changping, Haidian, Tongzhou, and Shunyi districts
-- **Data scale**: Pest and disease monitoring records covering 4 years × 10 districts × 365 days
+The versions in `requirements.txt` are pinned to remain compatible with the reported Python 3.7.7 environment.
 
 ---
 
-## ⚡ Quick Start
+## Data
 
-### Installation and Launch
+### Beijing PEMR Dataset
+
+- **Source**: Anonymized Plant Electronic Medical Records from plant clinics in ten Beijing districts
+- **Observation period**: 25 September 2018 to 18 June 2021
+- **Temporal coverage**: 998 daily observations per district
+- **Record count**: 144,845 PEMR records
+- **Districts**: Daxing, Miyun, Pinggu, Yanqing, Huairou, Fangshan, Changping, Haidian, Tongzhou, and Shunyi
+- **Availability**: The district-level PEMR data are available from the corresponding authors upon reasonable request and subject to institutional authorization
+
+### Public Aphid Dataset
+
+The external-validation dataset contains weekly aphid-trapping observations from Coxilha and Passo Fundo:
+
+https://github.com/GabrielRPalma/TimeSeriesReconstruction
+
+---
+
+## Installation
+
+### 1. Create a Python Environment
 
 ```bash
-# 1. Install dependencies
-pip install openpyxl
+conda create -n tspeaknet python=3.7.7
+conda activate tspeaknet
+```
 
-# 2. Start the server
+### 2. Install PyTorch
+
+For the reported CUDA 11.1 environment:
+
+```bash
+pip install torch==1.10.2+cu111 -f https://download.pytorch.org/whl/cu111/torch_stable.html
+```
+
+For CPU-only execution:
+
+```bash
+pip install torch==1.10.2+cpu -f https://download.pytorch.org/whl/cpu/torch_stable.html
+```
+
+### 3. Install the Remaining Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Verify the Environment
+
+```bash
+python -c "import torch; print(torch.__version__); print(torch.cuda.is_available())"
+```
+
+---
+
+## Platform Quick Start
+
+```bash
 python prediction_server.py
+```
 
-# 3. Open the system in a browser
-# http://localhost:8003
+Open the platform in a browser:
+
+```text
+http://localhost:8003
 ```
 
 ### Main Pages
 
 | Page | URL | Function |
 |---|---|---|
-| 🏠 Home | `/` | System navigation and overview |
-| 📝 Data Collection | `/data-collection` | Entry of plant medical records and meteorological data |
-| 📊 Data Analysis | `/data-analysis` | Multidimensional statistical analysis and visualization |
-| 🔮 Model Prediction | `/model-prediction` | Prediction comparison across 12 models |
-| 🗺️ Regional Warning | `/regional-warning` | Real-time regional risk map (Chinese version) |
-| 🌐 English Warning | `/regional-warning-en` | Risk map (English version) |
+| Home | `/` | Platform navigation and overview |
+| Data Collection | `/data-collection` | Entry of PEMR and contextual records |
+| Data Analysis | `/data-analysis` | Exploratory analysis and visualization |
+| Model Prediction | `/model-prediction` | Forecast comparison across models |
+| Regional Warning Support | `/regional-warning` | District-level Chinese dashboard |
+| English Dashboard | `/regional-warning-en` | District-level English dashboard |
 
 ---
 
-## 🎯 System Highlights
+## Data Format
 
-### 1. District-level Model Comparison
-
-The system visualizes the prediction performance of 12 deep-learning models for individual districts, enabling intuitive comparison between observed and predicted values.
-
-- **Technical innovation**: Automatically converts wide-format data and supports district-level selection.
-- **Visualization**: Provides interactive line charts based on Plotly.js, including zooming and hover-based inspection.
-- **Practical value**: Helps identify suitable models for precise district-level forecasting.
-
-### 2. Real-time Early-warning Map
-
-The Beijing district-level risk map is driven by ECharts and provides color-coded risk visualization.
-
-- **Five warning levels**: Risk levels range from normal (green) to emergency (dark red).
-- **Real-time update**: Risk levels are dynamically calculated using model predictions.
-- **Interactive experience**: Users can hover for details and click to view historical trends.
-
-### 3. Intelligent Disease Knowledge Base
-
-Users can click disease cards to open structured plant-protection knowledge.
-
-- **Rich content**: Includes symptoms, causes, affected regions, seasons, and control measures.
-- **AI-assisted content**: Provides plant-protection knowledge generated or organized with AI assistance.
-- **User-friendly interface**: Uses clean modal windows with clear information categories.
-
----
-
-## Project Structure
+### Observed District-Level Series
 
 ```text
-spatiotemporal_prediction_system/
-├── prediction_server.py          # Main server file
-├── simple_data_reader.py         # Data reading module
-├── data_analyzer.py              # Data analysis module
-├── data_collector.py             # Data collection module
-├── model_prediction_page.html    # Model prediction page
-├── requirements.txt              # Python dependencies
+Date        | Node_DaXing | Node_MiYun | Node_PingGu | ...
+2018-09-25  | 4           | 16          | 16          | ...
+2018-09-26  | 5           | 15          | 17          | ...
+```
+
+### Forecast Output
+
+```text
+Date        | Node_DaXing | Node_MiYun | Node_PingGu | ...
+2021-01-01  | 2.34        | 12.45       | 15.67       | ...
+2021-01-02  | 2.56        | 13.21       | 16.23       | ...
+```
+
+All chronological train-validation-test splits, preprocessing operations, and normalization statistics should be generated causally to prevent information leakage.
+
+---
+
+## Forecasting and Event-Evaluation Workflow
+
+```text
+Historical district-level prescription-count series
+                         ↓
+             Causal preprocessing
+                         ↓
+        Short-window and long-window inputs
+                         ↓
+                   TSPeakNet
+                         ↓
+          One-step-ahead count forecast
+                         ↓
+ Training-derived district-specific threshold
+                         ↓
+       Contiguous peak-event construction
+                         ↓
+ One-to-one matching within the temporal tolerance
+                         ↓
+ Precision, recall, F1, signed timing error, and PHB
+```
+
+### Interpretation of Timing Error
+
+For a matched observed and predicted event:
+
+```text
+signed timing error = predicted peak day − observed peak day
+```
+
+- A negative value indicates early detection.
+- Zero indicates on-time detection.
+- A positive value indicates delayed detection.
+
+The event-level results should therefore be interpreted as **peak-event detection and timing diagnostics**, not as uniform advance-warning capability in every district.
+
+---
+
+## Optional Online Recalibration
+
+The main comparative experiments are conducted **without test-time adaptation**. The repository also contains an optional strictly causal online recalibration procedure for deployment. A forecast is generated first; after the true observation becomes available, a small corrective update may be applied before the next prediction.
+
+This mechanism is intended for gradual recalibration under changing reporting conditions and is not the source of the main offline performance claim.
+
+---
+
+## Reproducibility Notes
+
+- Use chronological data splits; do not randomly shuffle time-series samples across train, validation, and test periods.
+- Estimate normalization statistics from the training split only.
+- Derive district-specific event thresholds from training data only.
+- Use identical processed inputs and forecast horizons when comparing models.
+- Record random seeds, selected hyperparameters, and software versions for each experiment.
+- Keep the main benchmark separate from optional online recalibration experiments.
+- Report sparse-count diagnostics together with MAE, RMSE, MASE, RMSSE, and event-level metrics.
+
+---
+
+## Representative Project Structure
+
+```text
+TSPeakNet/
+├── prediction_server.py          # Warning-support platform server
+├── simple_data_reader.py         # Data-reading utilities
+├── data_analyzer.py              # Analysis utilities
+├── data_collector.py             # Data-entry utilities
+├── model_prediction_page.html    # Model-comparison page
+├── requirements.txt              # Reproducible Python environment
 ├── README.md                     # Project documentation
-├── 时序数据/                     # Data directory
+├── README.assets/                # README screenshots
+├── 时序数据/                     # Local time-series data directory
 │   ├── 原始数据.xlsx
 │   ├── LSTM-预测数据.xlsx
 │   ├── GRU-预测数据.xlsx
 │   ├── TSPeakNet-预测模型.xlsx
-│   ├── ... (other model prediction files)
+│   ├── ...                       # Other model outputs
 │   └── 北京.json                 # Map data
-└── static/                       # Static assets
+└── static/                       # Static platform assets
 ```
+
+Private or institutionally restricted PEMR files should not be committed to the public repository.
 
 ---
 
-## Data Preparation
+## Citation
 
-**Raw data format** (`原始数据.xlsx`):
-
-```text
-Date        | Node_DaXing | Node_MiYun | Node_PingGu | ...
-2018-09-25  | 3.65        | 15.71      | 16.32       | ...
-2018-09-26  | 4.23        | 14.88      | 17.45       | ...
-```
-
-**Prediction data format** (`LSTM-预测数据.xlsx`):
-
-```text
-Date        | Node_DaXing | Node_MiYun | Node_PingGu | ...
-2021-01-01  | 2.34        | 12.45      | 15.67       | ...
-2021-01-02  | 2.56        | 13.21      | 16.23       | ...
-```
-
----
-
-## Technical Details
-
-### Model Prediction Workflow
-
-```text
-Historical time-series data
-        ↓
-Feature engineering
-        ↓
-Deep-learning models (12 models)
-        ↓
-Prediction generation
-        ↓
-Performance evaluation (MAE/RMSE/R²)
-        ↓
-Visual comparison
-```
-
-### Early-warning Generation Logic
-
-```text
-Real-time data collection
-        ↓
-Spatiotemporal forecasting model
-        ↓
-Risk-level assessment
-        ↓
-Threshold-based decision
-        ↓
-Early-warning generation
-        ↓
-Map-based visualization
-```
-
----
-
-## Copyright and Citation
-
-### Copyright
-
-© 2025 AgriGuard Platform. AI-powered crop pest and disease forecasting and early warning system based on big data and artificial intelligence.
-
-**Data source**: Plant clinics in 10 districts of Beijing | Prescription data from 2018 to 2021  
-**Technical support**: Spatiotemporal forecasting models + deep learning + large language models  
-**Developer affiliation**: College of Information and Electrical Engineering, China Agricultural University  
-**Development team**: Prof. Lingxian Zhang's team, including Yuanze Qin and collaborators
-
-### Academic Citation
-
-If you use this system or related methods, please cite the following work:
+The manuscript associated with this repository is:
 
 ```bibtex
-@article{qin2025tspeaknet,
-  title={TSPeakNet: Dual-scale time-series modeling for district-level crop-disease forecasting and peak-event warning},
-  author={Qin, Yuanze and Han, Zonghuan and Zhang, Lingxian and Zhang, Yiding},
-  year={2025}
+@article{qin2026tspeaknet,
+  title   = {TSPeakNet: A dual-scale neural architecture for district-level crop pest and disease time-series forecasting and peak-event detection},
+  author  = {Qin, Yuanze and Han, Zonghuan and Zhang, Lingxian and Zhang, Yiding},
+  year    = {2026},
+  note    = {Manuscript under review}
 }
 ```
 
-### License
+Please update the citation with the journal, volume, pages, and DOI after publication.
 
-This project is released under the [MIT License / Apache 2.0] open-source license.
+---
+
+## License
+
+This project is released under the **MIT License**. See the `LICENSE` file for details.
 
 ---
 
 ## Contact
 
-- **Technical support**: zhanglx@cau.edu.cn; qinyuanze@cau.edu.cn
-- **Project homepage**: [GitHub Repository](https://github.com/qyz1998453X/TSPeakNet.git)
+- *Yuanze Qin**: qinyuanze@cau.edu.cn
+- **Repository**: https://github.com/qyz1998453X/TSPeakNet
